@@ -56,10 +56,17 @@ router.get('/getStorage', function (req, res) {
 router.put('/updateAmount',function (req,res,next) {
     let gameName = req.body.gameName;
     let StokeAmount = req.body.StokeAmount;
-    db.updateStorageAmount(gameName,StokeAmount,function (result){
-        let status = (result==="The storage updated") ? 200:406;
-        res.status(status).send(result);
-    })
+    let i =!(/[a-zA-Z]+$/.test(StokeAmount)); // true if only numbers
+    if (!gameName || !StokeAmount || !i || StokeAmount <= 0) {
+        res.status(406).send('The receive data illegal');
+        res.end();
+    }
+    else {
+        db.updateStorageAmount(gameName, StokeAmount, function (result) {
+            let status = (result === "The storage updated") ? 200 : 406;
+            res.status(status).send(result);
+        })
+    }
 });
 
 router.post('/addGame',function (req,res,next) {
@@ -88,7 +95,7 @@ router.post('/addGame',function (req,res,next) {
 router.delete('/deleteGame', function (req, res,next) {
     let gameName = req.body.gameName;
     db.deleteGame(gameName, function (ans) {
-        let status = (ans==='game ' + gameName + ' deleted Successfully') ? '200':'406';
+        let status = (ans==='game ' + gameName + ' deleted Successfully') ? 200:406;
         res.sendStatus(status);
     })
 });

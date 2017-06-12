@@ -15,9 +15,10 @@ router.get('/getCartInfo', function (req, res) {
 
 router.post('/addToCart', function (req,res,next) {
     let userName = req.body.userName;
-    let game = req.body.game;
+    let game = req.body.gameName;
     let amount = req.body.amount;
-    if (!userName || !game || !amount || !(parseInt(amount)) ||amount <= 0) {
+    let i =!(/[a-zA-Z]+$/.test(amount)); // true if only numbers
+    if (!userName || !game || !amount || !i || !(parseInt(amount)) ||amount <= 0) {
         res.status(406).send('The receive data illegal');
         res.end();
     }
@@ -32,9 +33,10 @@ router.post('/addToCart', function (req,res,next) {
 
 router.put('/updateItemAmountAtCart', function (req,res,next) {
     let userName = req.body.userName;
-    let game = req.body.game;
+    let game = req.body.gameName;
     let amount = req.body.amount;
-    if (!userName || !game || !amount || !(parseInt(amount)) ||amount <= 0) {
+    let i =!(/[a-zA-Z]+$/.test(amount)); // true if only numbers
+    if (!userName || !game || !amount  || !i || !(parseInt(amount)) ||amount <= 0) {
         res.status(406).send('The receive data illegal');
         res.end();
     }
@@ -50,9 +52,9 @@ router.put('/updateItemAmountAtCart', function (req,res,next) {
 
 router.delete('/deleteItemFromCart', function (req, res,next) {
     let userName = req.body.userName;
-    let game = req.body.game;
+    let game = req.body.gameName;
     db.deleteItemFromCart(userName,game , function (ans) {
-        let status = (ans==='The game ' + game + ' deleted Successfully') ? '200':'406';
+        let status = (ans==='The game ' + game + ' deleted Successfully') ? 200:406;
         res.sendStatus(status);
     })
 });
